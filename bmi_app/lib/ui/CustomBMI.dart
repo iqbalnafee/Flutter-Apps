@@ -17,7 +17,7 @@ class _CustomBMIState extends State<CustomBMI> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: new Column(
+      child: new ListView(
         children: <Widget>[
           Center(
             child: Image.asset("images/bmi1.png",height: 100,width: 100,),
