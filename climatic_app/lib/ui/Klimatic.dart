@@ -84,10 +84,11 @@ class _KlimaticState extends State<Klimatic> {
   Future<Map> getWeather(String appId, String city) async {
     String apiUrl ="https://api.openweathermap.org/data/2.5/weather?q=$city&appid=$appId&units=metric";
     //String CityNames="https://raw.githubusercontent.com/lutangar/cities.json/master/cities.json";
+    String cityNames="https://raw.githubusercontent.com/iqbalnafee/Flutter-Apps/master/climatic_app/cityNames.json";
 
     http.Response response = await http.get(apiUrl);
-    //http.Response response2 = await http.get(CityNames);
-    //debugPrint(response2.body);
+    //http.Response response2 = await http.get(cityNames);
+    //debugPrint(json.decode(response2.body));
 
     //return JSON.decode(response.body);
     return json.decode(response.body);
