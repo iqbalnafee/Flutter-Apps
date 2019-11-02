@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import '../util/utils.dart' as util;//first we need tohet out from ui then insert into util. Hence there is 2 dots
 
 class Klimatic extends StatefulWidget {
+
   Klimatic({Key key}) : super(key: key);
   @override
   _KlimaticState createState() => _KlimaticState();
@@ -15,10 +16,11 @@ class Klimatic extends StatefulWidget {
 class _KlimaticState extends State<Klimatic> {
   //String city="dhaka";
 
-  /*void ShowData() async{
-    Map data = await getWeather(util.apiId, util.defaultCity);
-    print(data["main"]["temp"]);
-  }*/
+  void ShowData() async{
+    //Map data = await getCity();
+    //print(data.toString());
+  }
+  //String str= ['Dhaka', 'Islamabad', 'London', 'Mumbai','Auckland'] as String;
   String dropdownValue = 'Dhaka';
   @override
   Widget build(BuildContext context) {
@@ -32,7 +34,7 @@ class _KlimaticState extends State<Klimatic> {
         backgroundColor: Colors.red,
         actions: <Widget>[
           new IconButton(icon:new Icon(Icons.menu,color: Colors.white) ,
-              onPressed: ()=> print(""))
+              onPressed: ShowData )
         ],
       ),
       body: new Stack(
@@ -58,11 +60,12 @@ class _KlimaticState extends State<Klimatic> {
                   dropdownValue = newValue;
                 });
               },
-              items: <String>['Dhaka', 'Two', 'Free', 'Four']
+              items: <String>['Dhaka', 'Islamabad', 'London', 'Mumbai','Auckland','Gazipur','Chittagong','Comilla','Rajshahi','Sydney','Banglore',
+              'Bangkok','Paris','Dubai','Singapore','New York','Tokyo']
                   .map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
-                  child: Text(value,style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold,fontSize: 30),),
+                  child: Text(value,style: TextStyle(color:Colors.red,fontWeight: FontWeight.bold,fontSize: 30),),
                 );
               }).toList(),
             ),
@@ -73,7 +76,7 @@ class _KlimaticState extends State<Klimatic> {
           ),
           new Container(
             margin: EdgeInsets.fromLTRB(50, 350, 0, 0),
-            child: UpdateTemp("dhaka"),
+            child: UpdateTemp(dropdownValue),
           )
         ],
       ),
@@ -84,13 +87,21 @@ class _KlimaticState extends State<Klimatic> {
   Future<Map> getWeather(String appId, String city) async {
     String apiUrl ="https://api.openweathermap.org/data/2.5/weather?q=$city&appid=$appId&units=metric";
     //String CityNames="https://raw.githubusercontent.com/lutangar/cities.json/master/cities.json";
-    String cityNames="https://raw.githubusercontent.com/iqbalnafee/Flutter-Apps/master/climatic_app/cityNames.json";
+    //String cityNames="https://jsonplaceholder.typicode.com/comments";
 
     http.Response response = await http.get(apiUrl);
     //http.Response response2 = await http.get(cityNames);
+    //debugPrint(response2.body);
     //debugPrint(json.decode(response2.body));
 
     //return JSON.decode(response.body);
+    return json.decode(response.body);
+  }
+
+  Future<Map> getCity() async {
+
+    String cityNames="https://raw.githubusercontent.com/iqbalnafee/Flutter-Apps/master/climatic_app/cityNamesFormatted.json";
+    http.Response response = await http.get(cityNames);
     return json.decode(response.body);
   }
 
@@ -104,7 +115,7 @@ class _KlimaticState extends State<Klimatic> {
               child: new Column(
                 children: <Widget>[
                   new ListTile(
-                    title: new Text(content["main"]["temp"].toString(),style: TextStyle(fontSize: 50,fontWeight:FontWeight.bold,
+                    title: new Text("${content["main"]["temp"].toString()}°C",style: TextStyle(fontSize: 50,fontWeight:FontWeight.bold,
                         color: Colors.white),),
                   )
                 ],
