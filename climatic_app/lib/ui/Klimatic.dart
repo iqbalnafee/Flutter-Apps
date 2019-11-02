@@ -117,6 +117,16 @@ class _KlimaticState extends State<Klimatic> {
                   new ListTile(
                     title: new Text("${content["main"]["temp"].toString()}°C",style: TextStyle(fontSize: 50,fontWeight:FontWeight.bold,
                         color: Colors.white),),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: new Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        new Text("Weather: ",style: TextStyle(color: Colors.white,fontWeight: FontWeight.w400,fontSize: 30),),
+                        new Text(content["weather"][0]["description"].toString(),style: TextStyle(color: Colors.white,fontWeight: FontWeight.w400,fontSize: 30),),
+                      ],
+                    ),
                   )
                 ],
               ),
