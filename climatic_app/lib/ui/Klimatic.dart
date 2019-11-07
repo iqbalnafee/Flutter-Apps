@@ -6,6 +6,8 @@ import 'package:http/http.dart' as http;
 
 import '../util/utils.dart' as util;//first we need tohet out from ui then insert into util. Hence there is 2 dots
 
+String cityG="Dhaka";
+
 class Klimatic extends StatefulWidget {
 
   Klimatic({Key key}) : super(key: key);
@@ -15,6 +17,24 @@ class Klimatic extends StatefulWidget {
 
 class _KlimaticState extends State<Klimatic> {
   //String city="dhaka";
+
+  String _cityEntered='Dhaka';
+
+  Future _goToNextScreen(BuildContext context) async {
+    Map results = await Navigator
+        .of(context)
+        .push(new MaterialPageRoute<Map>(builder: (BuildContext context) { //change to Map instead of dynamic for this to work
+      return new InputCity();
+    }));
+
+    if ( results != null && results.containsKey('enter')) {
+      _cityEntered = results['enter'];
+
+      debugPrint("From First screen" + results['enter'].toString());
+
+
+    }
+  }
 
   void ShowData() async{
     //Map data = await getCity();
@@ -29,24 +49,26 @@ class _KlimaticState extends State<Klimatic> {
 
     return new Scaffold(
       appBar: AppBar(
-        title: Text("Weather App"),
+        title: Text("Climate Observer"),
         centerTitle: true,
         backgroundColor: Colors.red,
         actions: <Widget>[
           new IconButton(icon:new Icon(Icons.menu,color: Colors.white) ,
-              onPressed: ShowData )
+              onPressed: (){
+                _goToNextScreen(context);
+              } )
         ],
       ),
       body: new Stack(
         children: <Widget>[
           Center(
-            child: new Image.asset("images/umbrella.png",width: 490,height: 1200,fit: BoxFit.fill,),
+            child: new Image.asset("images/bg1.jpg",width: 490,height: 1200,fit: BoxFit.fill,),
           ),
           new Container(
             alignment:Alignment.topRight,
             margin: EdgeInsets.fromLTRB(0, 20, 30, 0),
             child: DropdownButton<String>(
-              value: dropdownValue,
+              value: _cityEntered,
               icon: Icon(Icons.arrow_downward,color: Colors.white,),
               iconSize: 24,
               elevation: 86,
@@ -57,26 +79,26 @@ class _KlimaticState extends State<Klimatic> {
               ),
               onChanged: (String newValue) {
                 setState(() {
-                  dropdownValue = newValue;
+                  _cityEntered = newValue;
                 });
               },
-              items: <String>['Dhaka', 'Islamabad', 'London', 'Mumbai','Auckland','Gazipur','Chittagong','Comilla','Rajshahi','Sydney','Banglore',
-              'Bangkok','Paris','Dubai','Singapore','New York','Tokyo']
+              items: <String>['Dhaka', 'Islamabad', 'London', 'Mumbai','Auckland','Gazipur','Chittagong','Comilla','Rajshahi','Sydney','Bangalore',
+              'Bangkok','Paris','Dubai','Singapore','New York','Tokyo','Rajkot']
                   .map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
-                  child: Text(value,style: TextStyle(color:Colors.red,fontWeight: FontWeight.bold,fontSize: 30),),
+                  child: Text(value,style: TextStyle(color:Colors.redAccent,fontWeight: FontWeight.bold,fontSize: 30),),
                 );
               }).toList(),
             ),
           ),
-          new Container(
+          /*new Container(
             alignment:Alignment.center,
             child: Image.asset("images/light_rain.png"),
-          ),
+          ),*/
           new Container(
-            margin: EdgeInsets.fromLTRB(50, 350, 0, 0),
-            child: UpdateTemp(dropdownValue),
+            margin: EdgeInsets.fromLTRB(10, 250, 0, 0),
+            child: UpdateTemp(_cityEntered),
           )
         ],
       ),
@@ -111,15 +133,15 @@ class _KlimaticState extends State<Klimatic> {
         builder: (BuildContext context,AsyncSnapshot<Map> snapshot){
           if(snapshot.hasData){
             Map content = snapshot.data;
-            return new Container(
-              child: new Column(
+            return new ListView(
+
                 children: <Widget>[
                   new ListTile(
                     title: new Text("${content["main"]["temp"].toString()}°C",style: TextStyle(fontSize: 50,fontWeight:FontWeight.bold,
                         color: Colors.white),),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.all(2.0),
                     child: new Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
@@ -129,7 +151,7 @@ class _KlimaticState extends State<Klimatic> {
                     ),
                   )
                 ],
-              ),
+
             );
           }else{
             return new Container();
@@ -144,3 +166,40 @@ class _KlimaticState extends State<Klimatic> {
     );
   }
 }
+
+class InputCity extends StatefulWidget {
+  String str="";
+  InputCity({Key k,this.str}):super(key:k);
+  @override
+  _InputState createState() => _InputState();
+}
+
+class _InputState extends State<InputCity> {
+  TextEditingController cityName=new TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: AppBar(
+        title: new Text("Manual City Input"),
+        centerTitle: true,
+        backgroundColor: Colors.red,
+      ),
+      body: Container(
+        margin: EdgeInsets.fromLTRB(20, 20, 20, 0),
+        child: new Wrap(
+          children: <Widget>[
+            new TextField(
+              controller: cityName,
+              keyboardType: TextInputType.text,
+              decoration: InputDecoration(labelText: "Enter City Name",hintText:
+              "ex: Dhaka,London,Dubai etc",border: OutlineInputBorder(borderRadius: BorderRadius.circular(3))),
+            ),
+            RaisedButton(onPressed: (){debugPrint(cityName.text);Navigator.pop(context, {'enter': cityName.text});},child: Text("Ok",style: TextStyle(color: Colors.white),),color: Colors.red,)
+          ],
+        ),
+      ),
+    );
+  }
+}
+
